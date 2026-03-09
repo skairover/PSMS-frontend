@@ -2,12 +2,13 @@ import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-// Set default baseURL for all axios requests
+// Axios instance
 const api = axios.create({
   baseURL,
+  withCredentials: true, // ✅ important for CORS if using cookies/auth
 });
 
-// Attach token automatically to all requests
+// Attach JWT token if present
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -16,22 +17,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Register a new user
-export const register = (formData) => {
-  return api.post('/api/auth/register', formData);
-};
+// Register user
+export const register = (formData) => api.post('/api/auth/register', formData);
 
-// Login and store JWT
+// Login and store token
 export const login = async (credentials) => {
   const res = await api.post('/api/auth/login', credentials);
   const token = res.data.token;
-  if (token) {
-    localStorage.setItem('token', token);
-  }
+  if (token) localStorage.setItem('token', token);
   return res;
 };
 
-// Logout (manual token removal, backend optional)
+// Logout
 export const logout = () => {
   localStorage.removeItem('token');
 };
