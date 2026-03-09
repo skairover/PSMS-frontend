@@ -12,6 +12,8 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
     "axios": "^1.13.6",
+    "chart.js": "^4.5.1",
+    "chartjs": "^0.3.24",
     "mongodb": "^7.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

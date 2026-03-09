@@ -19,7 +19,7 @@ const navigate = useNavigate();
       localStorage.setItem('token', token);
 
       toast.success('Logged in successfully');
-      navigate('/overview');
+      navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.error || 'Login failed. Try again.';
       toast.error(msg);
@@ -35,7 +35,7 @@ const navigate = useNavigate();
   return (
     <div className="w-screen h-screen bg-[#d6e8e7] text-gray-900 flex justify-center items-center">
       <div className="h-[70%] w-[80%] flex bg-white rounded-2xl">
-        <div className="w-full flex flex-col justify-center items-center">
+        <div className="w-full justify-center items-center hidden md:flex md:flex-col">
           <h1 className='text-3xl font-bold'>Pharmaceutical Supply<br/>Management System</h1>
           <p className='text-sm text-gray-400 mb-2'>Manage pharmacy stock, order, and suppliers easily</p>
           <img src={medicine} alt="" className="" />

@@ -19,7 +19,7 @@ const navigate = useNavigate();
       localStorage.setItem('token', token);
 
       toast.success('registered successfully');
-      navigate('/overview');
+      navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.error || 'Register failed. Try again.';
       toast.error(msg);
