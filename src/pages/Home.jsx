@@ -58,7 +58,7 @@ const Home = () => {
               <h1 className="text-3xl sm:text-4xl font-bold text-[#2C9AA8]">Smart Medication</h1>
               <h2 className="text-2xl sm:text-3xl font-bold mt-2">Record System</h2>
               <p className="mt-4 sm:mt-6 text-sm sm:text-base">A comprehensive solution for managing medication records and ensuring patient safety.</p>
-              <button className="mt-6 sm:mt-8 px-6 py-2 bg-[#118ae7] text-white rounded-lg hover:bg-[#2e6b9d]">Get Started</button>
+              <button className="mt-6 sm:mt-8 px-6 py-2 bg-[#118ae7] text-white rounded-lg hover:bg-[#2e6b9d]"><Link to="/login">Get Started</Link></button>
             </div>
             <img src="https://images.unsplash.com/photo-1585421514738-01798e348b17" className="rounded-lg object-cover w-full h-60 sm:h-80" />
           </div>

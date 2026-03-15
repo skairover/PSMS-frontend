@@ -22,7 +22,6 @@ function WeeklyBarChart({ items, backgroundColor }) {
   const lastWeek = new Date();
   lastWeek.setDate(now.getDate() - 7);
 
-  // Compute daily totals memoized to avoid recalculation every render
   const dailyTotals = useMemo(() => {
     const totals = Array(7).fill(0);
     items.forEach(item => {
@@ -59,13 +58,18 @@ function WeeklyBarChart({ items, backgroundColor }) {
           legend: { display: false },
           title: {
             display: true,
-            text: 'Weekly Spending'
+            text: ''
           }
         },
         scales: {
-          y: {
-            beginAtZero: true
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 200,
+          ticks: {
+            stepSize: 20
           }
+        }
         }
       }
     });

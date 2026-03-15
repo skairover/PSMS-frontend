@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,29 +54,76 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
       </aside>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex bg-[#0B2027] text-white w-[15%] h-screen flex-col items-center p-4">
+      <aside className="hidden md:flex bg-[#0B2027] text-white w-[15%] h-screen flex-col items-center py-4 ">
         <div className="flex flex-col items-center mb-8">
           <h2 className="font-[Florisha] text-lg">PSMS</h2>
         </div>
 
         <div className="flex flex-col flex-1 w-full">
           <nav className="space-y-5">
-            <Link to="/dashboard" className="flex items-center hover:text-gray-300">
+            <NavLink to="/dashboard" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c]  before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  : '  hover:text-gray-400'
+                }`
+              }
+            >
               <span>Dashboard</span>
-            </Link>
-            <Link to="/pharmacy" className="flex items-center hover:text-gray-300">
+            </NavLink>
+            <NavLink to="/pharmacy" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c] before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  :  'hover:text-gray-400'
+                }`
+              }
+            >
               <span>Pharmacy</span>
-            </Link>
-            <Link to="/emergency" className="flex items-center hover:text-gray-300">
+            </NavLink>
+            <NavLink to="/emergency" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c] before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  : ' hover:text-gray-400'
+                }`
+              }
+            >
               <span>Emergency</span>
-            </Link>
+            </NavLink>
 
-            <Link to="/icu" className="flex items-center hover:text-gray-300">
+            <NavLink to="/icu" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c] before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  : ' hover:text-gray-400'
+                }`
+              }
+            >
               <span>ICU</span>
-            </Link>
-            <Link to="/pediatrics" className="flex items-center hover:text-gray-300">
+            </NavLink>
+
+            <NavLink to="/surgery" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c] before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  : ' hover:text-gray-400'
+                }`
+              }
+            >
+              <span>Surgery</span>
+            </NavLink>
+
+            <NavLink to="/pediatrics" className={({ isActive }) =>
+                `relative flex items-center px-4 py-2 rounded-md transition-colors
+                ${isActive
+                  ? 'bg-[#40798c] before:content-[""] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-8 before:bg-teal-100 before:rounded-r-full'
+                  : ' hover:text-gray-400'
+                }`
+              }
+            >
               <span>Pediatrics</span>
-            </Link>
+            </NavLink>
           </nav>
 
           <button onClick={handleLogout} className="flex items-center hover:text-red-400 mt-auto">
