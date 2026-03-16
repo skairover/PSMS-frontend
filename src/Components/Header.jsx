@@ -2,7 +2,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 function Header({ title, setSidebarOpen }) {
   return (
-    <header className="bg-[#d6e8e7]  flex justify-between items-center h-[70px] px-5">
+    <header className="bg-[#d6e8e7] border-b flex justify-between items-center h-17.5 px-5">
       <button
   onClick={() => setSidebarOpen(true)}
   className="md:hidden dark:invert p-2"

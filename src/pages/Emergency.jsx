@@ -122,9 +122,6 @@ function Emergency() {
       <main className="px-6 py-8 relative">
 
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Emergency Patients
-          </h1>
           <p className="text-sm text-gray-500">
             Manage urgent cases
           </p>
