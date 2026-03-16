@@ -1,141 +1,294 @@
-import { useEffect, useState } from 'react';
-import Layout from '../Components/Layout';
-import Form from '../Components/Form';
-import toast from 'react-hot-toast';
-import { AiOutlineDelete } from "react-icons/ai";
-import { getMedicines, createMedicine, deleteMedicine } from '../services/medicineServices';
+import { useEffect, useState } from 'react'
+import Layout from '../Components/Layout'
+import toast from 'react-hot-toast'
+import { AiOutlineDelete } from "react-icons/ai"
+import { getMedicines, createMedicine, deleteMedicine } from '../services/medicineServices'
 
 function Pharmacy() {
-  const [showForm, setShowForm] = useState(false);
-  const [medicines, setMedicines] = useState([]);
+
+  const [showForm, setShowForm] = useState(false)
+  const [medicines, setMedicines] = useState([])
+
+  const [name, setName] = useState('')
+  const [category, setCategory] = useState('')
+  const [expDate, setExpDate] = useState('')
+  const [quantity, setQuantity] = useState('')
+  const [price, setPrice] = useState('')
+
+  const categories = [
+    'Analgesics','Antibiotics','Antipyretics','Anti-inflammatory',
+    'Antihistamines','Antacids','Cardiovascular','Diabetes',
+    'Respiratory','Vitamins','Vaccines','Herbal'
+  ]
 
   useEffect(() => {
-    fetchMedicines();
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = showForm ? 'hidden' : '';
-  }, [showForm]);
+    fetchMedicines()
+  }, [])
 
   const fetchMedicines = async () => {
-  try {
-    const data = await getMedicines();
-    if (!Array.isArray(data)) throw new Error('Expected array but got ' + typeof data);
-    setMedicines(data);
-  } catch (err) {
-    console.error('Error fetching medicines:', err.message || err);
-    toast.error('Failed to load medicines');
-  }
-};
-
-
-  const handleAddMedicine = async (medicine) => {
     try {
-      const newMedicine = await createMedicine(medicine);
-      setMedicines((prev) => [...prev, newMedicine]);
+      const data = await getMedicines()
+      setMedicines(data)
     } catch (err) {
-      console.error("Add medicine error:", err.response?.data || err.message);
-      toast.error("Failed to add medicine");
+      console.error(err)
+      toast.error('Failed to load medicines')
     }
-  };
+  }
+
+  const handleAddMedicine = async (e) => {
+    e.preventDefault()
+
+    if (!name || !category || !expDate || !quantity) {
+      toast.error("Fill all required fields")
+      return
+    }
+
+    try {
+      const newMedicine = await createMedicine({
+        name,
+        category,
+        expDate,
+        quantity,
+        price
+      })
+
+      setMedicines(prev => [...prev, newMedicine])
+
+      setName('')
+      setCategory('')
+      setExpDate('')
+      setQuantity('')
+      setPrice('')
+
+      setShowForm(false)
+
+      toast.success("Medicine added")
+
+    } catch (err) {
+      toast.error("Failed to add medicine")
+    }
+  }
 
   const handleDeleteMedicine = async (id) => {
     try {
-      await deleteMedicine(id);
-      setMedicines((prev) => prev.filter((med) => med._id !== id));
-      toast.success('Medicine deleted');
-    } catch (err) {
-      console.error('Delete failed', err.response?.data || err.message);
-      toast.error('Failed to delete medicine');
+      await deleteMedicine(id)
+      setMedicines(prev => prev.filter(m => m._id !== id))
+      toast.success("Medicine deleted")
+    } catch {
+      toast.error("Delete failed")
     }
-  };
+  }
 
   const formatDate = (isoDate) => {
-    const date = new Date(isoDate);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
+    const d = new Date(isoDate)
+    return d.toLocaleDateString()
+  }
 
   return (
-    <Layout title="Pharmacy" >
-         
-            
-            <main className="flex-1 text-black min-h-full bg-[--bg] relative">
-              {showForm && (
-                <div className="absolute inset-0 flex justify-center items-center z-20">
-                  <div className=" bg-white rounded-xl shadow-xl z-50">
-                    <Form
-                      type={'medicine'}
-                      onAdd={(medicine) => {
-                        handleAddMedicine(medicine);
-                        setShowForm(false);
-                      }}
-                    />
-                    
-                    <button
-                      onClick={() => setShowForm(false)}
-                      className=" text-red-900 py-[0.6em] px-[1.2em]"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-    
-              <button
-                onClick={() => setShowForm(true)}
-                className="text-white dark:text-black font-black z-50 mb-6 mr-6 bg-[#40798C] transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-[#305B69] rounded-full w-12 h-12 flex items-center justify-center fixed right-4 bottom-4 sm:right-8 sm:bottom-8"
+    <Layout title="Pharmacy">
+
+      <main className="relative px-6 py-8 ">
+
+        {/* PAGE TITLE */}
+        <div className="mb-8">
+          <p className="text-sm text-gray-500">
+            Manage medicines in stock
+          </p>
+        </div>
+
+
+        {/* TABLE */}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+
+          {medicines.length === 0 ? (
+
+            <p className="p-10 text-center text-gray-500">
+              No medicines yet
+            </p>
+
+          ) : (
+
+            <table className="w-full text-sm">
+
+              <thead className="bg-gray-50 border-b">
+
+                <tr className="text-left text-gray-600">
+
+                  <th className="px-6 py-3">Category</th>
+                  <th className="px-6 py-3">Name</th>
+                  <th className="px-6 py-3">Price</th>
+                  <th className="px-6 py-3">Quantity</th>
+                  <th className="px-6 py-3">Exp Date</th>
+                  <th className="px-6 py-3">Added</th>
+                  <th className="px-6 py-3 text-center">Action</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {medicines.map((med) => (
+
+                  <tr
+                    key={med._id}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
+
+                    <td className="px-6 py-3">
+
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                        {med.category}
+                      </span>
+
+                    </td>
+
+                    <td className="px-6 py-3 font-medium text-gray-800">
+                      {med.name}
+                    </td>
+
+                    <td className="px-6 py-3">
+                      {med.price ? `$${med.price}` : "-"}
+                    </td>
+
+                    <td className="px-6 py-3">
+                      {med.quantity}
+                    </td>
+
+                    <td className="px-6 py-3">
+                      {med.expDate ? formatDate(med.expDate) : "-"}
+                    </td>
+
+                    <td className="px-6 py-3 text-gray-500">
+                      {formatDate(med.createdAt)}
+                    </td>
+
+                    <td className="px-6 py-3 text-center">
+
+                      <AiOutlineDelete
+                        onClick={() => handleDeleteMedicine(med._id)}
+                        className="inline w-5 h-5 text-red-500 cursor-pointer hover:text-red-700"
+                      />
+
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          )}
+
+        </div>
+
+
+        {/* FLOAT BUTTON */}
+        <button
+          onClick={() => setShowForm(true)}
+          className="fixed bottom-8 right-8 w-14 h-14 bg-teal-600 hover:bg-teal-700 text-white text-2xl rounded-full shadow-lg flex items-center justify-center transition"
+        >
+          +
+        </button>
+
+
+        {/* MODAL */}
+        {showForm && (
+
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+            <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
+
+              <h2 className="text-lg font-semibold mb-6">
+                Add Medicine
+              </h2>
+
+              <form
+                onSubmit={handleAddMedicine}
+                className="space-y-4"
               >
-                +
-              </button>
-    
-<section className="mt-6 overflow-x-auto">
-  {medicines.length === 0 ? (
-    <p className="text-gray-600 text-center py-10">No medicines yet.</p>
-  ) : (
-    <table className="min-w-full bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
-      <thead className="bg-gray-100 dark:bg-gray-700">
-        <tr>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Category</th>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Name</th>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Price</th>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Quantity</th>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Exp Date</th>
-          <th className="px-4 py-2 text-left text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Added On</th>
-          <th className="px-4 py-2 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-        {medicines.map((med) => (
-          <tr key={med._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-              <span className="bg-green-200 dark:bg-green-700 text-green-900 dark:text-green-100 px-3 py-1 rounded-full text-xs font-semibold">
-                {med.category}
-              </span>
-            </td>
-            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">{med.name}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{med.price ? `$${med.price}` : '-'}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{med.quantity}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">{med.expDate ? formatDate(med.expDate) : '-'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">{formatDate(med.createdAt)}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2">
-              <AiOutlineDelete
-                className="w-6 h-6 p-1 rounded-lg cursor-pointer hover:bg-red-200 dark:hover:bg-red-700 transition duration-200 ease-in-out"
-                onClick={() => handleDeleteMedicine(med._id)}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )}
-</section>
-            </main>
-          
-          </Layout>
-  );
+
+                <input
+                  placeholder="Medicine name"
+                  value={name}
+                  onChange={(e)=>setName(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2"
+                />
+
+                <select
+                  value={category}
+                  onChange={(e)=>setCategory(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2"
+                >
+
+                  <option value="">Select category</option>
+
+                  {categories.map(c => (
+                    <option key={c}>{c}</option>
+                  ))}
+
+                </select>
+
+                <input
+                  type="date"
+                  value={expDate}
+                  onChange={(e)=>setExpDate(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+
+                  <input
+                    type="number"
+                    placeholder="Quantity"
+                    value={quantity}
+                    onChange={(e)=>setQuantity(e.target.value)}
+                    className="border rounded-lg px-3 py-2"
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Price"
+                    value={price}
+                    onChange={(e)=>setPrice(e.target.value)}
+                    className="border rounded-lg px-3 py-2"
+                  />
+
+                </div>
+
+                <div className="flex gap-3 pt-2">
+
+                  <button
+                    type="submit"
+                    className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg"
+                  >
+                    Add
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={()=>setShowForm(false)}
+                    className="flex-1 border py-2 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+
+                </div>
+
+              </form>
+
+            </div>
+
+          </div>
+
+        )}
+
+      </main>
+
+    </Layout>
+  )
 }
 
-export default Pharmacy;
+export default Pharmacy
