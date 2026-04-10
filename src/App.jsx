@@ -14,7 +14,41 @@ function App() {
   return (
   
       <BrowserRouter>
-        <Toaster position="top-center" />
+<Toaster
+  position="top-center"
+  gutter={10}
+  toastOptions={{
+    duration: 3500,
+    style: {
+      background: '#ffffff',
+      color: '#071952',
+      border: '1px solid #daeef2',
+      borderRadius: '16px',
+      fontSize: '13px',
+      fontWeight: '500',
+      boxShadow: '0 8px 32px rgba(7,25,82,0.12)',
+      padding: '14px 18px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px',
+     
+    },
+    success: {
+      iconTheme: { primary: '#088395', secondary: '#ffffff' },
+      style: {
+        borderLeft: '4px solid #37B7C3',
+        borderRadius: '16px',
+      },
+    },
+    error: {
+      iconTheme: { primary: '#ef4444', secondary: '#ffffff' },
+      style: {
+        borderLeft: '4px solid #ef4444',
+        borderRadius: '16px',
+      },
+    },
+  }}
+/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
