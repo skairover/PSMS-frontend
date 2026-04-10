@@ -164,7 +164,7 @@ function Pharmacy() {
                             onClick={() => handleDeleteMedicine(med._id)}
                             className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150"
                           >
-                            <AiOutlineDelete size={17} />
+                            <AiOutlineDelete size={17} color='ffffff' />
                           </button>
                         </td>
                       </tr>
